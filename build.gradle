@@ -30,14 +30,14 @@ publishing {
     publications {
         liveKt(MavenPublication) {
             groupId "ru.dargen"
-            artifactId "accessories-kt"
+            artifactId "accessors-kt"
             version "live-kt"
             artifact jar
         }
 
         versionKt(MavenPublication) {
             groupId "ru.starfarm"
-            artifactId "accessories-kt"
+            artifactId "accessors-kt"
             version "${project.version}-kt"
             artifact jar
         }
