@@ -1,0 +1,52 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id "maven-publish"
+}
+
+apply plugin: "maven-publish"
+
+group = 'ru.dargen'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.starfarm.fun/public" }
+}
+
+dependencies {
+
+}
+publishing {
+    repositories {
+        maven {
+            url "https://repo.starfarm.fun/public"
+            credentials {
+                username System.getenv("SF_REPO_USER")
+                password System.getenv("SF_REPO_PASSWORD")
+            }
+        }
+    }
+
+    publications {
+        liveKt(MavenPublication) {
+            groupId "ru.dargen"
+            artifactId "accessories-kt"
+            version "live-kt"
+            artifact jar
+        }
+
+        versionKt(MavenPublication) {
+            groupId "ru.starfarm"
+            artifactId "accessories-kt"
+            version "${project.version}-kt"
+            artifact jar
+        }
+    }
+}
+
+compileKotlin.kotlinOptions.freeCompilerArgs = ['-Xjvm-default=all']
+
+jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+
+tasks.withType(JavaCompile)*.options*.encoding = "UTF-8"
