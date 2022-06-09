@@ -10,6 +10,7 @@ import ru.dargen.accessors.member.method.MethodAccessor
 interface ClassAccessor<T> : Accessor {
 
 //    override val declaredClass: Class<T>
+    override val declaredClass: Class<T>
     val strategy: AccessorStrategy
     val classes: Array<Class<*>>
 

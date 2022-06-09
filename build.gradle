@@ -6,7 +6,7 @@ plugins {
 apply plugin: "maven-publish"
 
 group = 'ru.dargen'
-version = '1.0'
+version = '1.0.1'
 
 repositories {
     mavenCentral()
@@ -30,15 +30,15 @@ publishing {
     publications {
         liveKt(MavenPublication) {
             groupId "ru.dargen"
-            artifactId "accessors-kt"
-            version "live-kt"
+            artifactId "accessors"
+            version "live"
             artifact jar
         }
 
         versionKt(MavenPublication) {
-            groupId "ru.starfarm"
-            artifactId "accessors-kt"
-            version "${project.version}-kt"
+            groupId "ru.dargen"
+            artifactId "accessors"
+            version "${project.version}"
             artifact jar
         }
     }
