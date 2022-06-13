@@ -21,6 +21,13 @@ abstract class AbstractMemberAccessor<T : AccessibleObject>(override val member:
         return modifiers.contains(modifier)
     }
 
+    //Annotations
+    override val annotations: Set<Annotation> = member.annotations.toSet()
+
+    override fun <A : Annotation> getAnnotation(type: Class<out Annotation>): A? = member.getDeclaredAnnotation(type) as A?
+
+    override fun <A : Annotation> isAnnotationPresent(type: Class<out Annotation>): Boolean = member.isAnnotationPresent(type)
+
     //Access
 
     override val isAccessOpened: Boolean get() = member.isAccessible
