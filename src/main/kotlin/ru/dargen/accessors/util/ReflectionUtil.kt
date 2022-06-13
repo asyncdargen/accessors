@@ -22,7 +22,7 @@ object ReflectionUtil {
     @Throws(AccessException::class)
     fun <T> getValue(field: Field, instance: Any?): T? {
         try {
-            return field[instance] as T?
+            return field.apply { isAccessible = true }[instance] as T?
         } catch (e: Throwable) {
             throw AccessException(e)
         }
@@ -32,7 +32,7 @@ object ReflectionUtil {
     @Throws(AccessException::class)
     fun setValue(field: Field, instance: Any?, value: Any?) {
         try {
-            field[instance] = value
+            field.apply { isAccessible = true }[instance] = value
         } catch (e: Throwable) {
             throw AccessException(e)
         }
@@ -42,7 +42,7 @@ object ReflectionUtil {
     @Throws(AccessException::class)
     fun <T> getValue(instance: Any, fieldName: String): T? {
         try {
-            return getField(instance.javaClass, fieldName)[instance] as T?
+            return getField(instance.javaClass, fieldName).apply { isAccessible = true }[instance] as T?
         } catch (e: Throwable) {
             throw AccessException(e)
         }
@@ -52,7 +52,7 @@ object ReflectionUtil {
     @Throws(AccessException::class)
     fun setValue(instance: Any, fieldName: String, value: Any?) {
         try {
-            getField(instance.javaClass, fieldName)[instance] = value
+            getField(instance.javaClass, fieldName).apply { isAccessible = true }[instance] = value
         } catch (e: Throwable) {
             throw AccessException(e)
         }
