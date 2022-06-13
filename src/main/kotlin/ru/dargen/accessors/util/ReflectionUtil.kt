@@ -20,6 +20,46 @@ object ReflectionUtil {
 
     @JvmStatic
     @Throws(AccessException::class)
+    fun <T> getValue(field: Field, instance: Any?): T? {
+        try {
+            return field[instance] as T?
+        } catch (e: Throwable) {
+            throw AccessException(e)
+        }
+    }
+
+    @JvmStatic
+    @Throws(AccessException::class)
+    fun setValue(field: Field, instance: Any?, value: Any?) {
+        try {
+            field[instance] = value
+        } catch (e: Throwable) {
+            throw AccessException(e)
+        }
+    }
+
+    @JvmStatic
+    @Throws(AccessException::class)
+    fun <T> getValue(instance: Any, fieldName: String): T? {
+        try {
+            return getField(instance.javaClass, fieldName)[instance] as T?
+        } catch (e: Throwable) {
+            throw AccessException(e)
+        }
+    }
+
+    @JvmStatic
+    @Throws(AccessException::class)
+    fun setValue(instance: Any, fieldName: String, value: Any?) {
+        try {
+            getField(instance.javaClass, fieldName)[instance] = value
+        } catch (e: Throwable) {
+            throw AccessException(e)
+        }
+    }
+
+    @JvmStatic
+    @Throws(AccessException::class)
     fun getMethod(declaredClass: Class<*>, methodName: String, vararg methodArgumentsTypes: Class<*>): Method {
         try {
             return declaredClass.getDeclaredMethod(methodName, *methodArgumentsTypes)
