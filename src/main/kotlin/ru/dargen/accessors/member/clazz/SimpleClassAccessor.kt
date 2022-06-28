@@ -8,24 +8,24 @@ import ru.dargen.accessors.member.method.MethodAccessor
 
 open class SimpleClassAccessor<T>(declaredClass: Class<T>, strategy: AccessorStrategy) : AbstractClassAccessor<T>(declaredClass, strategy) {
 
-    protected val FIELD_ACCESSORS: MutableMap<String, FieldAccessor<*>> by lazy { HashMap() }
-    protected val METHOD_ACCESSORS: MutableMap<Pair<String, Array<Class<*>>>, MethodAccessor<*>> by lazy { HashMap() }
-    protected val CONSTRUCTOR_ACCESSORS: MutableMap<Array<Class<*>>, ConstructorAccessor<T>> by lazy { HashMap() }
+    override val fieldAccessors: MutableMap<String, FieldAccessor<*>> by lazy { HashMap() }
+    override val methodAccessors: MutableMap<Pair<String, Array<Class<*>>>, MethodAccessor<*>> by lazy { HashMap() }
+    override val constructorAccessors: MutableMap<Array<Class<*>>, ConstructorAccessor<T>> by lazy { HashMap() }
 
     override fun <T> getFieldAccessor(fieldName: String): FieldAccessor<T> {
-        return FIELD_ACCESSORS.computeIfAbsent(fieldName) {
+        return fieldAccessors.computeIfAbsent(fieldName) {
             strategy.fieldAccessor<T>(declaredClass, fieldName)
         } as FieldAccessor<T>
     }
 
     override fun <T> getMethodAccessor(methodName: String, vararg methodArguments: Class<*>): MethodAccessor<T> {
-        return METHOD_ACCESSORS.computeIfAbsent((methodName to methodArguments) as Pair<String, Array<Class<*>>>) {
+        return methodAccessors.computeIfAbsent((methodName to methodArguments) as Pair<String, Array<Class<*>>>) {
             strategy.methodAccessor<T>(declaredClass, methodName, *methodArguments)
         } as MethodAccessor<T>
     }
 
     override fun getConstructorAccessor(vararg constructorArguments: Class<*>): ConstructorAccessor<T> {
-        return CONSTRUCTOR_ACCESSORS.computeIfAbsent(constructorArguments as Array<Class<*>>) {
+        return constructorAccessors.computeIfAbsent(constructorArguments as Array<Class<*>>) {
             strategy.constructorAccessor(declaredClass, *constructorArguments)
         }
     }
@@ -33,11 +33,10 @@ open class SimpleClassAccessor<T>(declaredClass: Class<T>, strategy: AccessorStr
     override fun loadAccessors(vararg members: MemberType) {
         members.forEach {
             when (it) {
-                MemberType.CONSTRUCTOR -> if (strategy == AccessorStrategy.UNSAFE)
-                    getConstructorAccessor()
-                else declaredClass.declaredConstructors.forEach { getConstructorAccessor(*it.parameterTypes) }
-                MemberType.METHOD -> declaredClass.declaredMethods.forEach { getMethodAccessor<Any>(it.name, *it.parameterTypes) }
-                MemberType.FIELD -> declaredClass.declaredFields.forEach { getFieldAccessor<Any>(it.name) }
+                MemberType.CONSTRUCTOR -> if (strategy == AccessorStrategy.UNSAFE) getConstructorAccessor()
+                else constructors.forEach { getConstructorAccessor(*it.parameterTypes) }
+                MemberType.METHOD -> methods.forEach { getMethodAccessor<Any>(it.name, *it.parameterTypes) }
+                MemberType.FIELD -> fields.forEach { getFieldAccessor<Any>(it.name) }
             }
         }
     }

@@ -4,16 +4,19 @@ import ru.dargen.accessors.member.MemberModifier
 import ru.dargen.accessors.member.clazz.ClassAccessor
 import ru.dargen.accessors.member.clazz.SimpleClassAccessor
 import ru.dargen.accessors.member.constructor.ConstructorAccessor
-import ru.dargen.accessors.member.constructor.DescriptorConstructorAccessor
+import ru.dargen.accessors.member.constructor.InvokeConstructorAccessor
 import ru.dargen.accessors.member.constructor.ReflectConstructorAccessor
 import ru.dargen.accessors.member.constructor.UnsafeNoArgConstructorAccessor
 import ru.dargen.accessors.member.enum.EnumAccessor
 import ru.dargen.accessors.member.enum.SimpleEnumAccessor
 import ru.dargen.accessors.member.field.*
-import ru.dargen.accessors.member.method.DescriptorMethodAccessor
+import ru.dargen.accessors.member.method.InvokeMethodAccessor
 import ru.dargen.accessors.member.method.MethodAccessor
 import ru.dargen.accessors.member.method.ReflectMethodAccessor
-import ru.dargen.accessors.util.DescriptorUtil
+import ru.dargen.accessors.member.obj.ObjectAccessor
+import ru.dargen.accessors.member.obj.SimpleObjectAccessor
+import ru.dargen.accessors.proxy.ProxyBuilder
+import ru.dargen.accessors.util.InvokeUtil
 import ru.dargen.accessors.util.ReflectionUtil
 import ru.dargen.accessors.util.unsafe.UnsafeFieldValueAccessor
 import ru.dargen.accessors.util.unsafe.UnsafeUtil
@@ -78,13 +81,13 @@ object Accessors {
     }
 
     @JvmStatic
-    fun <T> descriptorFieldAccessor(declaredClass: Class<*>, fieldName: String): FieldAccessor<T> {
-        return descriptorFieldAccessor(ReflectionUtil.getField(declaredClass, fieldName))
+    fun <T> invokeFieldAccessor(declaredClass: Class<*>, fieldName: String): FieldAccessor<T> {
+        return invokeFieldAccessor(ReflectionUtil.getField(declaredClass, fieldName))
     }
 
     @JvmStatic
-    fun <T> descriptorFieldAccessor(field: Field): FieldAccessor<T> {
-        return DescriptorFieldAccessor(field, DescriptorUtil.unreflectGetter(field), DescriptorUtil.unreflectSetter(field))
+    fun <T> invokeFieldAccessor(field: Field): FieldAccessor<T> {
+        return InvokeFieldAccessor(field, InvokeUtil.unreflectGetter(field), InvokeUtil.unreflectSetter(field))
     }
 
     @JvmStatic
@@ -115,13 +118,13 @@ object Accessors {
     }
 
     @JvmStatic
-    fun <T> descriptorMethodAccessor(declaredClass: Class<*>, methodName: String, vararg methodArguments: Class<*>): MethodAccessor<T> {
-        return descriptorMethodAccessor(ReflectionUtil.getMethod(declaredClass, methodName, *methodArguments))
+    fun <T> invokeMethodAccessor(declaredClass: Class<*>, methodName: String, vararg methodArguments: Class<*>): MethodAccessor<T> {
+        return invokeMethodAccessor(ReflectionUtil.getMethod(declaredClass, methodName, *methodArguments))
     }
 
     @JvmStatic
-    fun <T> descriptorMethodAccessor(method: Method): MethodAccessor<T> {
-        return DescriptorMethodAccessor(method, DescriptorUtil.unreflectMethod(method))
+    fun <T> invokeMethodAccessor(method: Method): MethodAccessor<T> {
+        return InvokeMethodAccessor(method, InvokeUtil.unreflectMethod(method))
     }
 
     //Constructor accessors
@@ -137,13 +140,13 @@ object Accessors {
     }
 
     @JvmStatic
-    fun <T> descriptorConstructorAccessor(declaredClass: Class<*>, vararg constructorArguments: Class<*>): ConstructorAccessor<T> {
-        return descriptorConstructorAccessor(ReflectionUtil.getConstructor(declaredClass, *constructorArguments))
+    fun <T> invokeConstructorAccessor(declaredClass: Class<*>, vararg constructorArguments: Class<*>): ConstructorAccessor<T> {
+        return invokeConstructorAccessor(ReflectionUtil.getConstructor(declaredClass, *constructorArguments))
     }
 
     @JvmStatic
-    fun <T> descriptorConstructorAccessor(constructor: Constructor<T>): ConstructorAccessor<T> {
-        return DescriptorConstructorAccessor(constructor, DescriptorUtil.unreflectConstructor(constructor))
+    fun <T> invokeConstructorAccessor(constructor: Constructor<T>): ConstructorAccessor<T> {
+        return InvokeConstructorAccessor(constructor, InvokeUtil.unreflectConstructor(constructor))
     }
 
     //Classes accessors
@@ -154,8 +157,8 @@ object Accessors {
     }
 
     @JvmStatic
-    fun <T> descriptorClassAccessor(declaredClass: Class<T>): ClassAccessor<T> {
-        return SimpleClassAccessor(declaredClass, AccessorStrategy.DESCRIPTOR)
+    fun <T> invokeClassAccessor(declaredClass: Class<T>): ClassAccessor<T> {
+        return SimpleClassAccessor(declaredClass, AccessorStrategy.INVOKE)
     }
 
     @JvmStatic
@@ -171,8 +174,8 @@ object Accessors {
     }
 
     @JvmStatic
-    fun <E : Enum<E>> descriptorEnumAccessor(declaredClass: Class<E>): EnumAccessor<E> {
-        return SimpleEnumAccessor(declaredClass, AccessorStrategy.DESCRIPTOR)
+    fun <E : Enum<E>> invokeEnumAccessor(declaredClass: Class<E>): EnumAccessor<E> {
+        return SimpleEnumAccessor(declaredClass, AccessorStrategy.INVOKE)
     }
 
     @JvmStatic
@@ -201,5 +204,27 @@ object Accessors {
     fun <T> unsafeNoArgsConstructorAccessor(constructor: Constructor<T>): ConstructorAccessor<T> {
         return UnsafeNoArgConstructorAccessor(constructor)
     }
+
+    //Object
+
+    @JvmStatic
+    fun <T : Any> reflectObjectAccessor(obj: T): ObjectAccessor<T> {
+        return SimpleObjectAccessor(obj, reflectClassAccessor(obj.javaClass))
+    }
+
+    @JvmStatic
+    fun <T : Any> invokeObjectAccessor(obj: T): ObjectAccessor<T> {
+        return SimpleObjectAccessor(obj, invokeClassAccessor(obj.javaClass))
+    }
+
+    @JvmStatic
+    fun <T : Any> unsafeObjectAccessor(obj: T): ObjectAccessor<T> {
+        return SimpleObjectAccessor(obj, unsafeClassAccessor(obj.javaClass))
+    }
+
+    //Proxy
+    @JvmOverloads
+    @JvmStatic
+    fun newProxyBuilder(strategy: AccessorStrategy = AccessorStrategy.REFLECTION) = ProxyBuilder().accessStrategy(strategy)
 
 }

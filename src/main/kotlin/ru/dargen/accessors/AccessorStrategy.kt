@@ -45,37 +45,37 @@ enum class AccessorStrategy {
         }
 
     },
-    DESCRIPTOR {
+    INVOKE {
         override fun <T> fieldAccessor(declaredClass: Class<*>, fieldName: String): FieldAccessor<T> {
-            return Accessors.descriptorFieldAccessor(declaredClass, fieldName)
+            return Accessors.invokeFieldAccessor(declaredClass, fieldName)
         }
 
         override fun <T> fieldAccessor(field: Field): FieldAccessor<T> {
-            return Accessors.descriptorFieldAccessor(field)
+            return Accessors.invokeFieldAccessor(field)
         }
 
         override fun <T> methodAccessor(declaredClass: Class<*>, methodName: String, vararg methodArguments: Class<*>): MethodAccessor<T> {
-            return Accessors.descriptorMethodAccessor(declaredClass, methodName, *methodArguments)
+            return Accessors.invokeMethodAccessor(declaredClass, methodName, *methodArguments)
         }
 
         override fun <T> methodAccessor(method: Method): MethodAccessor<T> {
-            return Accessors.descriptorMethodAccessor(method)
+            return Accessors.invokeMethodAccessor(method)
         }
 
         override fun <T> constructorAccessor(declaredClass: Class<T>, vararg constructorArguments: Class<*>): ConstructorAccessor<T> {
-            return Accessors.descriptorConstructorAccessor(declaredClass, *constructorArguments)
+            return Accessors.invokeConstructorAccessor(declaredClass, *constructorArguments)
         }
 
         override fun <T> constructorAccessor(constructor: Constructor<T>): ConstructorAccessor<T> {
-            return Accessors.descriptorConstructorAccessor(constructor)
+            return Accessors.invokeConstructorAccessor(constructor)
         }
 
         override fun <T> classAccessor(declaredClass: Class<T>): ClassAccessor<T> {
-            return Accessors.descriptorClassAccessor(declaredClass)
+            return Accessors.invokeClassAccessor(declaredClass)
         }
 
         override fun <E : Enum<E>> enumAccessor(declaredClass: Class<E>): EnumAccessor<E> {
-            return Accessors.descriptorEnumAccessor(declaredClass)
+            return Accessors.invokeEnumAccessor(declaredClass)
         }
     },
     UNSAFE {
@@ -88,11 +88,11 @@ enum class AccessorStrategy {
         }
 
         override fun <T> methodAccessor(declaredClass: Class<*>, methodName: String, vararg methodArguments: Class<*>): MethodAccessor<T> {
-            return Accessors.descriptorMethodAccessor(declaredClass, methodName, *methodArguments)
+            return Accessors.invokeMethodAccessor(declaredClass, methodName, *methodArguments)
         }
 
         override fun <T> methodAccessor(method: Method): MethodAccessor<T> {
-            return Accessors.descriptorMethodAccessor(method)
+            return Accessors.invokeMethodAccessor(method)
         }
 
         override fun <T> constructorAccessor(declaredClass: Class<T>, vararg constructorArguments: Class<*>): ConstructorAccessor<T> {

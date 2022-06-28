@@ -8,7 +8,7 @@ import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
-object DescriptorUtil {
+object InvokeUtil {
 
     @JvmField
     val LOOKUP: Lookup = Lookup::class.java.getDeclaredField("IMPL_LOOKUP").runCatching {

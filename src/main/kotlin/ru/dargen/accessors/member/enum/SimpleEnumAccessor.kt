@@ -28,9 +28,10 @@ class SimpleEnumAccessor<E : Enum<E>>(
     }
 
     private fun putConstantFields(newType: E, vararg fieldValues: Any?): E {
-        FIELD_ACCESSORS.values.filter { !it.hasModifier(MemberModifier.STATIC) }.forEachIndexed { index, fieldAccessor ->
-            fieldValues.getOrNull(index)?.let { (fieldAccessor as FieldAccessor<Any?>).setValue(newType, it) }
-        }
+        fieldAccessors.values.filter { !it.hasModifier(MemberModifier.STATIC) }
+            .forEachIndexed { index, fieldAccessor ->
+                fieldValues.getOrNull(index)?.let { (fieldAccessor as FieldAccessor<Any?>).setValue(newType, it) }
+            }
 
         return newType
     }

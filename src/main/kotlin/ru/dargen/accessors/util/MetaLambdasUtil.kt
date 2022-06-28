@@ -2,7 +2,6 @@ package ru.dargen.accessors.util
 
 import ru.dargen.accessors.member.MemberModifier
 import java.lang.invoke.*
-import java.lang.invoke.MethodHandles.Lookup
 
 object MetaLambdasUtil {
 
@@ -21,7 +20,7 @@ object MetaLambdasUtil {
     fun <L> asInterfaceLambda(declaredClass: Class<*>, methodHandle: MethodHandle): L {
         try {
             val callSite = LambdaMetafactory.metafactory(
-                DescriptorUtil.LOOKUP,
+                InvokeUtil.LOOKUP,
                 declaredClass.declaredMethods.first { MemberModifier.ABSTRACT.isActiveOnMember(it) }.name,
                 MethodType.methodType(declaredClass),
                 methodHandle.type().generic(),

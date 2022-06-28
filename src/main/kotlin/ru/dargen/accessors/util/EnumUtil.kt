@@ -2,9 +2,7 @@ package ru.dargen.accessors.util
 
 import ru.dargen.accessors.Accessors
 import ru.dargen.accessors.member.field.FieldAccessor
-import ru.dargen.accessors.member.field.UnsafeStaticFieldAccessor
 import ru.dargen.accessors.util.unsafe.UnsafeUtil
-import kotlin.jvm.internal.SpreadBuilder
 
 typealias JEnum<E> = java.lang.Enum<E>
 
@@ -16,7 +14,7 @@ object EnumUtil {
     @JvmStatic
     fun <E : Enum<E>> valuesFieldAccessor(declaredClass: Class<E>): FieldAccessor<Array<E>> {
         return ENUM_VALUES_ACCESSORS.computeIfAbsent(declaredClass) {
-            Accessors.descriptorFieldAccessor(declaredClass, "\$VALUES")
+            Accessors.invokeFieldAccessor(declaredClass, "\$VALUES")
         } as FieldAccessor<Array<E>>
     }
 
