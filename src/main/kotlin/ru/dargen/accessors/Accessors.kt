@@ -183,16 +183,11 @@ object Accessors {
         return SimpleEnumAccessor(declaredClass, AccessorStrategy.UNSAFE)
     }
 
-    private val CONSTRUCTOR_DECLARED_CLASS_ACCESSOR = unsafeFieldAccessor<Class<*>>(Constructor::class.java, "clazz")
-    private val CONSTRUCTOR_MODIFIER_ACCESSOR = unsafeFieldAccessor<Int>(Constructor::class.java, "modifiers")
+//    private val ConstructorDeclaredClassAccessor = unsafeFieldAccessor<Class<*>>(Constructor::class.java, "clazz")
+//    private val ConstructorModifierAccessor = unsafeFieldAccessor<Int>(Constructor::class.java, "modifiers")
 
     private fun <T> createEmptyConstructor(declaredClass: Class<T>): Constructor<T> {
-        val constructor = UnsafeUtil.allocateInstance(Constructor::class.java)
-
-        CONSTRUCTOR_DECLARED_CLASS_ACCESSOR.setValue(constructor, declaredClass)
-        CONSTRUCTOR_MODIFIER_ACCESSOR.setValue(constructor, 1)
-
-        return constructor as Constructor<T>
+        return declaredClass.declaredConstructors.sortedBy(Constructor<*>::getParameterCount).first() as Constructor<T>
     }
 
     @JvmStatic
@@ -221,6 +216,12 @@ object Accessors {
     fun <T : Any> unsafeObjectAccessor(obj: T): ObjectAccessor<T> {
         return SimpleObjectAccessor(obj, unsafeClassAccessor(obj.javaClass))
     }
+
+//    @JvmStatic
+//    fun <A> newProxiedObjectAccessor(strategy: AccessorStrategy, obj: Any, accessorClass: Class<A>): A {
+//        return SimpleObjectAccessor(obj, reflectClassAccessor(obj.javaClass))
+//    }
+
 
     //Proxy
     @JvmOverloads

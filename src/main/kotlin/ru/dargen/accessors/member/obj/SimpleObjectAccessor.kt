@@ -3,7 +3,7 @@ package ru.dargen.accessors.member.obj
 import ru.dargen.accessors.AccessorStrategy
 import ru.dargen.accessors.member.clazz.ClassAccessor
 
-class SimpleObjectAccessor<A>(override var accessedObject: A, override val classAccessor: ClassAccessor<A>) : ObjectAccessor<A> {
+open class SimpleObjectAccessor<A>(override var accessedObject: A, override val classAccessor: ClassAccessor<A>) : ObjectAccessor<A> {
 
     override val strategy: AccessorStrategy
         get() = classAccessor.strategy
