@@ -100,7 +100,7 @@ object InvokeUtil {
     @Throws(AccessException::class)
     fun findVirtual(declaredClass: Class<*>, methodName: String, returnType: Class<*>, vararg methodArgumentsTypes: Class<*>): MethodHandle {
         try {
-            return LOOKUP.findStatic(declaredClass, methodName, MethodType.methodType(returnType, methodArgumentsTypes))
+            return LOOKUP.findVirtual(declaredClass, methodName, MethodType.methodType(returnType, methodArgumentsTypes))
         } catch (t: Throwable) {
             throw AccessException(t)
         }
@@ -110,7 +110,7 @@ object InvokeUtil {
     @Throws(AccessException::class)
     fun findStatic(declaredClass: Class<*>, methodName: String, returnType: Class<*>, vararg methodArgumentsTypes: Class<*>): MethodHandle {
         try {
-            return LOOKUP.findVirtual(declaredClass, methodName, MethodType.methodType(returnType, methodArgumentsTypes))
+            return LOOKUP.findStatic(declaredClass, methodName, MethodType.methodType(returnType, methodArgumentsTypes))
         } catch (t: Throwable) {
             throw AccessException(t)
         }
