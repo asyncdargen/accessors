@@ -15,7 +15,7 @@ abstract class AbstractClassAccessor<T>(
     final override val modifiers: Set<MemberModifier> =
         MemberModifier.values().filter { it.testPredicate.test(declaredClass.modifiers) }.toSet()
     final override val accessModifier: MemberModifier =
-        modifiers.first(MemberModifier::isVisibleModifier)
+        modifiers.firstOrNull(MemberModifier::isVisibleModifier) ?: MemberModifier.PUBLIC
 
     override fun hasModifier(modifier: MemberModifier): Boolean {
         return modifiers.contains(modifier)

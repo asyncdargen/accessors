@@ -15,7 +15,7 @@ abstract class AbstractMemberAccessor<T : AccessibleObject>(override val member:
     final override val modifiers: Set<MemberModifier> =
         MemberModifier.values().filter { it.isActiveOnMember(member) }.toSet()
     final override val accessModifier: MemberModifier =
-        modifiers.first(MemberModifier::isVisibleModifier)
+        modifiers.firstOrNull(MemberModifier::isVisibleModifier) ?: MemberModifier.PUBLIC
 
     override fun hasModifier(modifier: MemberModifier): Boolean {
         return modifiers.contains(modifier)
