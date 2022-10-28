@@ -1,12 +1,10 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
     id "maven-publish"
 }
 
-apply plugin: "maven-publish"
-
 group = 'ru.dargen'
-version = '1.0.9'
+version = '1.1.0'
 
 repositories {
     mavenCentral()
@@ -16,6 +14,7 @@ repositories {
 dependencies {
 
 }
+
 publishing {
     repositories {
         maven {
@@ -29,16 +28,16 @@ publishing {
 
     publications {
         liveKt(MavenPublication) {
-            groupId "ru.dargen"
+            groupId project.group
             artifactId "accessors"
             version "live"
             artifact jar
         }
 
         versionKt(MavenPublication) {
-            groupId "ru.dargen"
+            groupId project.group
             artifactId "accessors"
-            version "${project.version}"
+            version project.version
             artifact jar
         }
     }
@@ -50,3 +49,13 @@ jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
 
 tasks.withType(JavaCompile)*.options*.encoding = "UTF-8"
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
